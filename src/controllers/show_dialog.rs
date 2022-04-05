@@ -103,7 +103,10 @@ async fn request(payload: String, app_data: web::Data<ServiceSet>) -> Result<boo
         let channel = req_payload.channel;
 
         tokio::spawn(async move {
-            create_email_thread(channel.id.clone(), create_options, app_data).await;
+            let result = create_email_thread(channel.id.clone(), create_options, app_data).await;
+            if result.is_err(){
+                println!("failed to create mail: {:?}", result.err());
+            }
         });
         return Ok(true);
     }
