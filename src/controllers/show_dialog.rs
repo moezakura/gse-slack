@@ -1,8 +1,6 @@
+use crate::domains::models;
 use crate::domains::models::data_set::ServiceSet;
 use crate::domains::services::gse;
-use crate::domains::services::gse::GseService;
-use crate::domains::services::slack::SlackService;
-use crate::domains::{models, services};
 use actix_web::{post, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -104,7 +102,7 @@ async fn request(payload: String, app_data: web::Data<ServiceSet>) -> Result<boo
 
         tokio::spawn(async move {
             let result = create_email_thread(channel.id.clone(), create_options, app_data).await;
-            if result.is_err(){
+            if result.is_err() {
                 println!("failed to create mail: {:?}", result.err());
             }
         });
@@ -148,7 +146,7 @@ async fn create_email_thread(
     let send_text = if create_result.status {
         format!("success!\ncreated email: {}", create_result.message)
     } else {
-        format!("failed!\nmessage: {}", create_result.message)
+        format!("failed!\nmessage: {}", mail_address.to_string())
     };
 
     let req_data = json!({

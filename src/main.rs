@@ -28,10 +28,8 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or("info"));
 
     let config_service = services::config::ConfigService::new(config_path);
-    if config_service.is_err() {
-        panic!("failed to init: config service: {:?}", config_service.err());
-    }
-    let config_service = config_service.unwrap();
+    let config_service =
+        config_service.unwrap_or_else(|e| panic!("failed to init: config service: {:?}", e));
     let config_data = config_service.get_data();
 
     let gse_service = services::gse::GseService::new(config_data.gse_token);
